@@ -162,6 +162,7 @@ form button:hover {
     border-radius: 12px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     text-align: center;
+    overflow: hidden; /* Ensures that any overflowing content is hidden */
 }
 
 #venue-location h2 {
@@ -178,18 +179,19 @@ form button:hover {
 
 /* Map container styles */
 .map-container {
+    width: 100%;
     max-width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
-    overflow: hidden;
+    overflow: hidden; /* Prevent overflow of map */
     border-radius: 10px;
 }
 
 .map-container iframe {
     width: 100%;
-    max-width: 1000px;
     height: 450px;
+    max-width: 1000px; /* Limits the width to avoid stretching on large screens */
     border: 2px solid #d4a373;
     border-radius: 10px;
 }
@@ -213,7 +215,11 @@ form button:hover {
     }
 }
 
-
+@media (max-width: 480px) {
+    .map-container iframe {
+        height: 250px;
+    }
+}
 
 /* Footer */
 footer {
