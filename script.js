@@ -56,61 +56,24 @@ mapContainer.innerHTML = `<iframe src="https://www.google.com/maps/embed?pb=!1m1
 document.querySelector(".container").appendChild(mapContainer);
 
 
-document.addEventListener("DOMContentLoaded", function () {
-    const prevBtn = document.querySelector(".prev-btn");
-    const nextBtn = document.querySelector(".next-btn");
-    const carousel = document.querySelector(".carousel");
-    const images = carousel.querySelectorAll("img");
-    let currentIndex = 0;
-
-    function showImage(index) {
-        if (index < 0) {
-            index = images.length - 1; // Loop to last image
-        } else if (index >= images.length) {
-            index = 0; // Loop to first image
-        }
-        const offset = -index * 100;
-        carousel.style.transform = `translateX(${offset}%)`;
-        currentIndex = index;
-    }
-
-    prevBtn.addEventListener("click", function () {
-        showImage(currentIndex - 1); // Show previous image
-    });
-
-    nextBtn.addEventListener("click", function () {
-        showImage(currentIndex + 1); // Show next image
-    });
-
-    // Auto-cycle the images every 5 seconds
-    setInterval(function () {
-        showImage(currentIndex + 1);
-    }, 5000);
-
-    // Initialize the carousel to show the first image
-    showImage(currentIndex);
-});
-
 let currentIndex = 0;
+const slides = document.querySelectorAll('.carousel-item');
+const totalSlides = slides.length;
 
-function showSlide(index) {
-    const slides = document.querySelectorAll('.carousel img');
-    const totalSlides = slides.length;
-
-    if (index < 0) {
-        currentIndex = totalSlides - 1;
-    } else if (index >= totalSlides) {
-        currentIndex = 0;
-    } else {
-        currentIndex = index;
-    }
-
-    const offset = -currentIndex * 100;
-    document.querySelector('.carousel').style.transform = `translateX(${offset}%)`;
+function updateCarousel() {
+    // Move the slide to the right position
+    const slideWidth = slides[0].clientWidth;
+    document.querySelector('.carousel-slide').style.transform = `translateX(-${currentIndex * slideWidth}px)`;
 }
 
-document.querySelector('.next-btn').addEventListener('click', () => showSlide(currentIndex + 1));
-document.querySelector('.prev-btn').addEventListener('click', () => showSlide(currentIndex - 1));
+function autoSlide() {
+    // Increment the current index and loop if it exceeds the total number of slides
+    currentIndex = (currentIndex + 1) % totalSlides;
+    updateCarousel();
+}
 
-// Initialize carousel
-showSlide(currentIndex);
+// Automatically change slides every 5 seconds
+setInterval(autoSlide, 5000);
+
+// Initial call to update the carousel's position
+updateCarousel();
