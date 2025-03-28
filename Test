@@ -1,0 +1,24 @@
+pool.getConnection()
+    .compose(conn -> {
+        // Start transaction
+        return conn.begin()
+            .compose(tx -> {
+                // First update query
+                Future<RowSet<Row>> update1 = conn
+                    .sqlTemplateForUpdate("UPDATE table1 SET col1 = ? WHERE id = ?")
+                    .execute(Tuple.of(value1, id1));
+
+                // Second update query
+                Future<RowSet<Row>> update2 = conn
+                    .sqlTemplateForUpdate("UPDATE table2 SET col2 = ? WHERE id = ?")
+                    .execute(Tuple.of(value2, id2));
+
+                return CompositeFuture.all(update1, update2)
+                    .compose(res -> tx.commit())  // Commit transaction if both succeed
+                    .onFailure(err -> tx.rollback()) // Rollback on failure
+                    .map(res);
+            })
+            .onComplete(res -> conn.close()); // Close connection
+    })
+    .onSuccess(res -> System.out.println("Transaction successful"))
+    .onFailure(err -> System.err.println("Transaction failed: " + err.getMessage()));
